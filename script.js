@@ -50,14 +50,14 @@ function displayBooks() {
         //Action buttons
         const btnDel = document.createElement('button');
         btnDel.setAttribute('type', 'button');
-        btnDel.setAttribute('class', 'btnDel');
+        btnDel.classList.add('btnDel');
         //btnDel.setAttribute('data-index', index);
         btnDel.addEventListener('click', () => deleteBookFromLibrary(index));
         btnDel.innerText = 'Delete';
 
         const btnRead = document.createElement('button');
         btnRead.setAttribute('type', 'button');
-        btnRead.setAttribute('class', 'btnRead');
+        btnRead.classList.add('btnRead');
         btnRead.addEventListener('click', () => toggleReadInLibrary(index));
         btnRead.innerText = 'Read';
         
@@ -65,7 +65,10 @@ function displayBooks() {
         cellTitle.innerText = book.title;
         cellAuthor.innerText = book.author;
         cellNumPages.innerText = book.numPages;
-        cellRead.innerText = book.read;
+        cellRead.innerText = (book.read)?'✔':'❌';
+        cellRead.classList.add('readCell');
+
+        cellAction.classList.add('actionCell');
         cellAction.appendChild(btnDel);
         cellAction.appendChild(btnRead);
 
