@@ -8,6 +8,9 @@ function Book(title, author, numPages, read) {
     this.info = function () {
         return `${title} by ${author}, ${numPages} pages, ${read ? 'already read' : `not yet read`}.`
     }
+    this.toggleRead = function() {
+        this.read = !(this.read);
+    }
 }
 
 function addBookToLibrary() {
@@ -17,7 +20,16 @@ function addBookToLibrary() {
     const read = document.getElementById('read').checked;
 
     myLibrary.push(new Book(title, author, numPages, read));
-    console.log(myLibrary);
+    displayBooks();
+}
+
+function deleteBookFromLibrary(index) {
+    myLibrary.splice(index, 1);
+    displayBooks();
+}
+
+function toggleReadInLibrary(index) {
+    myLibrary[index].toggleRead();
     displayBooks();
 }
 
@@ -25,23 +37,44 @@ function displayBooks() {
     const tbody = document.querySelector('#myBooks > tbody');
     tbody.innerHTML = '';
 
-    myLibrary.forEach(book => {
+    myLibrary.forEach((book, index) => {
         const row = document.createElement('tr');
+        row.setAttribute('data-index', index);
+
+        const cellTitle = document.createElement('td');
+        const cellAuthor = document.createElement('td');
+        const cellNumPages = document.createElement('td');
+        const cellRead = document.createElement('td');
+        const cellAction = document.createElement('td');
         
-        const tdTitle = document.createElement('td');
-        const tdAuthor = document.createElement('td');
-        const tdNumPages = document.createElement('td');
-        const tdRead = document.createElement('td');
+        //Action buttons
+        const btnDel = document.createElement('button');
+        btnDel.setAttribute('type', 'button');
+        btnDel.setAttribute('class', 'btnDel');
+        //btnDel.setAttribute('data-index', index);
+        btnDel.addEventListener('click', () => deleteBookFromLibrary(index));
+        btnDel.innerText = 'Delete';
 
-        tdTitle.innerText = book.title;
-        tdAuthor.innerText = book.author;
-        tdNumPages.innerText = book.numPages;
-        tdRead.innerText = book.read;
+        const btnRead = document.createElement('button');
+        btnRead.setAttribute('type', 'button');
+        btnRead.setAttribute('class', 'btnRead');
+        btnRead.addEventListener('click', () => toggleReadInLibrary(index));
+        btnRead.innerText = 'Read';
+        
+        //Cells content
+        cellTitle.innerText = book.title;
+        cellAuthor.innerText = book.author;
+        cellNumPages.innerText = book.numPages;
+        cellRead.innerText = book.read;
+        cellAction.appendChild(btnDel);
+        cellAction.appendChild(btnRead);
 
-        row.appendChild(tdTitle);
-        row.appendChild(tdAuthor);
-        row.appendChild(tdNumPages);
-        row.appendChild(tdRead);
+        //Append the data in this order to the row
+        row.appendChild(cellTitle);
+        row.appendChild(cellAuthor);
+        row.appendChild(cellNumPages);
+        row.appendChild(cellRead);
+        row.appendChild(cellAction);
 
         tbody.appendChild(row);
     });
@@ -68,7 +101,9 @@ function configureModalForm(){
 
 }
 
-myLibrary.push(new Book('The Hobbit', 'J.R.R. Tolkien', 295, false));
+myLibrary.push(new Book('The Hobbit', 'J.R.R. Tolkien', 295, true));
+myLibrary.push(new Book('Star Wars', 'George Lucas', 675, false));
+myLibrary.push(new Book('Harry Potter', 'J. K. Rowling', 1105, false));
 
 displayBooks();
 configureModalForm();
