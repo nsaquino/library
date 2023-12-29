@@ -34,6 +34,32 @@ class DisplayController {
 
     constructor(lib) {
         this.#library = lib;
+
+        //DOM References
+        const dialog = document.querySelector('dialog');
+        const showBtn = document.querySelector('#newBtn');
+        const cancelBtn = document.querySelector('#cancelBtn');
+        const form = document.querySelector('#submitBookForm');
+
+        //Configure modal form
+        showBtn.addEventListener('click', () => {
+            dialog.showModal();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            dialog.close();
+        });
+
+        //Handler for 'add book' button in modal form
+        form.addEventListener('submit', () => {
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const numPages = document.getElementById('numPages').value;
+            const read = document.getElementById('read').checked;
+    
+            this.#library.addBook(new Book(title, author, numPages, read));
+            this.render();
+        });
     }
 
     render() {
@@ -106,47 +132,13 @@ class DisplayController {
             this.render();
         }
     }
-
-
-    #addBookHandler = () => {
-        const title = document.getElementById('title').value;
-        const author = document.getElementById('author').value;
-        const numPages = document.getElementById('numPages').value;
-        const read = document.getElementById('read').checked;
-
-        this.#library.addBook(new Book(title, author, numPages, read));
-        this.render();
-    }
-
-    configureModalForm() {
-        const dialog = document.querySelector('dialog');
-        const showBtn = document.querySelector('#newBtn');
-        const cancelBtn = document.querySelector('#cancelBtn');
-        const submitBtn = document.querySelector('#submitBook');
-        const form = document.querySelector('#submitBookForm');
-
-        showBtn.addEventListener('click', () => {
-            dialog.showModal();
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            dialog.close();
-        });
-
-        form.addEventListener('submit', this.#addBookHandler);
-    }
 }
 
 const myLibrary = new Library();
-const display = new DisplayController(myLibrary);
-
 
 myLibrary.addBook(new Book('The Hobbit', 'J.R.R. Tolkien', 295, true));
 myLibrary.addBook(new Book('Star Wars', 'George Lucas', 675, false));
 myLibrary.addBook(new Book('Harry Potter', 'J. K. Rowling', 1105, false));
 
-console.log(myLibrary);
-console.dir(myLibrary);
-
+const display = new DisplayController(myLibrary);
 display.render();
-display.configureModalForm();
